@@ -1,0 +1,36 @@
+{
+  "name": "sovabase",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "env-cmd -f ./config/dev.env nodemon src/index.js --ext js, --exec babel-node",
+    "test": "env-cmd -f ./config/test.env jest --watch --runInBand"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@prisma/cli": "^2.4.1",
+    "jest": "^26.3.0",
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@prisma/client": "^2.4.1",
+    "apollo-boost": "^0.4.9",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "bcryptjs": "^2.4.3",
+    "core-js": "^3.6.5",
+    "env-cmd": "^10.1.0",
+    "graphql-request": "^3.0.0",
+    "graphql-yoga": "^1.18.3",
+    "jsonwebtoken": "^8.5.1",
+    "prisma-binding": "^2.3.16",
+    "regenerator-runtime": "^0.13.7"
+  }
+}
