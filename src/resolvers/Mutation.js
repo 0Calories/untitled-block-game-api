@@ -112,10 +112,6 @@ const Mutation = {
         id
       }
     }, info);
-  },
-
-  async updatePost(parent, args, { prisma, request }, info) {
-    
   }
 };
 

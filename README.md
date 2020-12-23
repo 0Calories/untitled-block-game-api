@@ -1,8 +1,7 @@
 ### Instructions for when changing database schema
 
 - Modify prisma/schema.prisma with new DB changes
-- Run ```npx prisma migrate save --name <name> --experimental```
-- Run ```npx prisma migrate up --experimental```
+- Run ```prisma migrate dev --preview-feature```
 - Generate a new Prisma client by running ```npx prisma generate```
 
 ### How to clone DB

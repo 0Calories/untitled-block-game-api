@@ -8,34 +8,44 @@ datasource db {
 }
 
 model User {
-  id         Int       @default(autoincrement()) @id
-  username   String    @unique
-  email      String    @unique
+  id         Int        @id @default(autoincrement())
+  username   String     @unique
+  email      String     @unique
   password   String
   bio        String?
-  created_at DateTime? @default(now())
+  created_at DateTime?  @default(now())
+  worlds     World[]
   comments   Comment[]
-  posts      Post[]
+  character  Character?
+}
+
+model Character {
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @unique
+  colour String @default("#FFFFFF")
+  bobux  Int    @default(0)
+}
+
+model World {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  visits      Int       @default(0)
+  likes       Int       @default(0)
+  dislikes    Int       @default(0)
+  creator     User      @relation(fields: [creatorId], references: [id])
+  creatorId   Int
+  created_at  DateTime? @default(now())
+  updated_at  DateTime? @default(now())
+  comments    Comment[]
 }
 
 model Comment {
-  id         Int       @default(autoincrement()) @id
+  id         Int       @id @default(autoincrement())
   text       String
-  post_id    Int
-  author_id  Int
+  userId     Int
+  worldId    Int
   created_at DateTime? @default(now())
-  author     User      @relation(fields: [author_id], references: [id])
-  post       Post      @relation(fields: [post_id], references: [id])
-}
-
-model Post {
-  id         Int       @default(autoincrement()) @id
-  title      String
-  body       String?
-  likes      Int?      @default(0)
-  authorId   Int
-  created_at DateTime? @default(now())
-  updated_at DateTime? @default(now())
-  author     User      @relation(fields: [authorId], references: [id])
-  comments   Comment[]
+  user       User      @relation(fields: [userId], references: [id])
+  world      World     @relation(fields: [worldId], references: [id])
 }
