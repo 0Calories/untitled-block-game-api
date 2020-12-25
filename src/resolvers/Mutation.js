@@ -19,8 +19,18 @@ const Mutation = {
       }
     });
 
+    // Create a character for the user
+    const character = await prisma.character.create({
+      data: {
+        user: {
+          connect: { id: user.id }
+        }
+      }
+    })
+
     return {
       user,
+      character,
       token: generateToken(user.id)
     };
   },

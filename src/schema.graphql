@@ -1,6 +1,7 @@
 type Query {
   users(query: String): [User!]!
   me: User!
+  myCharacter: Character!
 }
 
 type Mutation {
@@ -20,13 +21,13 @@ type Mutation {
 type AuthPayload {
   token: String!
   user: User!
+  character: Character!
 }
 
 input CreateUserInput {
   username: String!
   email: String!
   password: String!
-  bio: String
 }
 
 input UpdateUserInput {
@@ -47,6 +48,12 @@ type User {
   email: String
   password: String
   bio: String
+}
+
+type Character {
+  id: Int
+  colour: String!
+  bobux: Int!
 }
 
 type Post {

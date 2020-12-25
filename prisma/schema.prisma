@@ -20,8 +20,8 @@ model User {
 }
 
 model Character {
-  user   User   @relation(fields: [userId], references: [id])
-  userId Int    @unique
+  user   User   @relation(fields: [id], references: [id])
+  id     Int    @unique
   colour String @default("#FFFFFF")
   bobux  Int    @default(0)
 }
