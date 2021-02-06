@@ -15,13 +15,16 @@
 - Create a new database using pgAdmin or the command line
 - Navigate to the prisma directory in the project
 - Create a new file and name it ```.env```
-- Add the environment variable for the database URL, replacing the username, password, and db with your credentials:
+- Add the environment variable for the database URL, replacing the username and password with your credentials, and db with the name of your database:
 ```DATABASE_URL=postgresql://janedoe:mypassword@localhost:5432/mydb``` 
 - Run ```npx prisma migrate dev --preview-feature```
 - Generate a new Prisma client by running ```npx prisma generate```
 
 ### Running the API locally
 - At this point, you should have a local database ready to go. You can test out the API by doing the following:
+- Under the config directory in the project, create three new files: ```dev.env```, ```prod.env```, and ```test.env```.
+- In each file, add the following two environment variables: ```PRISMA_SECRET```, and ```JWT_SECRET```.
+- Assign each variable with a value, you can use a password generator to make them. Ensure that they are different values for each file.
 - Run ```yarn dev```. When the console tells you the server is up, go to ```http://localhost:4000/``` to view the GraphQL playground
 
 ### Instructions for when making changes to the database schema
