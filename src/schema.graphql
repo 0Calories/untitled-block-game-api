@@ -10,6 +10,8 @@ type Mutation {
   updateUser(data: UpdateUserInput!): User!
   login(email: String, username: String, password: String!): AuthPayload!
 
+  createWorld(data: CreateWorldInput!): World!
+
   createPost(data: CreatePostInput!): Post!
   deletePost(id: Int!): Post!
 }
@@ -37,6 +39,11 @@ input UpdateUserInput {
   bio: String
 }
 
+input CreateWorldInput {
+  name: String!
+  description: String
+}
+
 input CreatePostInput {
   title: String!
   body: String
@@ -54,6 +61,16 @@ type Character {
   id: Int
   colour: String!
   bobux: Int!
+}
+
+type World {
+  id: Int!
+  name: String!
+  description: String
+  visits: Int
+  likes: Int
+  dislikes: Int 
+  creator: User!
 }
 
 type Post {
