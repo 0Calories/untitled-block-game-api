@@ -1,4 +1,4 @@
-# Recommended VSCode Extensions
+### Recommended VSCode Extensions
 - GitLens
 - GraphQL for VSCode
 - npm
