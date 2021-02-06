@@ -8,7 +8,7 @@
 ### How to setup a local database
 - Create a new database using pgAdmin or the command line
 - Navigate to the prisma directory in the project
-- Create a '.env' file
+- Create a new file and name it ```.env```
 - Add the environment variable for the database URL, replacing the username, password, and db with your credentials:
 ```DATABASE_URL=postgresql://janedoe:mypassword@localhost:5432/mydb``` 
 - Run ```npx prisma migrate dev --preview-feature```
