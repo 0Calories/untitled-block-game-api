@@ -36,7 +36,6 @@ input UpdateUserInput {
   username: String
   email: String
   password: String
-  bio: String
 }
 
 input CreateWorldInput {
@@ -54,13 +53,14 @@ type User {
   username: String!
   email: String
   password: String
-  bio: String
 }
 
 type Character {
   id: Int
   colour: String!
   bobux: Int!
+  bio: String
+  worlds: [World]
 }
 
 type World {
