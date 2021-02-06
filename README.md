@@ -9,7 +9,7 @@
 - Create a new database using pgAdmin or the command line
 - Navigate to the prisma directory in the project root
 - Create a '.env' file
-- Add the environment variable for the databse URL, replacing the username, password, and db with your credentials:
+- Add the environment variable for the database URL, replacing the username, password, and db with your credentials:
 ```DATABASE_URL=postgresql://janedoe:mypassword@localhost:5432/mydb``` 
 - Run ```npx prisma migrate dev --preview-feature```
 - Generate a new Prisma client by running ```npx prisma generate```
