@@ -67,7 +67,7 @@ const Mutation = {
       throw new Error('Must provide an email address or username');
     }
 
-    const user = await prisma.user.findOne({
+    const user = await prisma.user.findUnique({
       where: {
         email,
         username
@@ -90,43 +90,43 @@ const Mutation = {
     };
   },
 
-  async createPost(parent, args, { prisma, request }, info) {
-    const userId = getUserId(request);
+  // async createPost(parent, args, { prisma, request }, info) {
+  //   const userId = getUserId(request);
 
-    return await prisma.post.create({
-      data: {
-        ...args.data,
-        author: {
-          connect: { id: userId }
-        }
-      },
-      include: { author: true }
-    }, info);
-  },
-  
-  async deletePost(parent, args, { prisma, request }, info) {
-    const { id } = args;
-    const userId = getUserId(request);
+  //   return await prisma.post.create({
+  //     data: {
+  //       ...args.data,
+  //       author: {
+  //         connect: { id: userId }
+  //       }
+  //     },
+  //     include: { author: true }
+  //   }, info);
+  // },
 
-    // TODO: This is kind of sloppy but the only way to do this at the moment.
-    // When Prisma 2 reintroduces the "exists" operation, use that here instead.
-    const posts = await prisma.post.findMany({
-      where: {
-        id,
-        AND: [{ authorId: userId }]
-      }
-    });
+  // async deletePost(parent, args, { prisma, request }, info) {
+  //   const { id } = args;
+  //   const userId = getUserId(request);
 
-    if (!posts[0]) {
-      throw new Error('Post not found or unauthorized operation');
-    }
+  //   // TODO: This is kind of sloppy but the only way to do this at the moment.
+  //   // When Prisma 2 reintroduces the "exists" operation, use that here instead.
+  //   const posts = await prisma.post.findMany({
+  //     where: {
+  //       id,
+  //       AND: [{ authorId: userId }]
+  //     }
+  //   });
 
-    return await prisma.post.delete({
-      where: {
-        id
-      }
-    }, info);
-  }
+  //   if (!posts[0]) {
+  //     throw new Error('Post not found or unauthorized operation');
+  //   }
+
+  //   return await prisma.post.delete({
+  //     where: {
+  //       id
+  //     }
+  //   }, info);
+  // }
 };
 
 export default Mutation;

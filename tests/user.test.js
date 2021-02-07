@@ -43,35 +43,24 @@ test('Should create a new user', async () => {
   expect(user.username).toBe(variables.data.username);
 });
 
-test('Should expose public profiles', async () => {
-  const response = await request(URL, getUsers);
+test('Should not login with bad credentials', async () => {
+  const variables = {
+    email: userOne.input.email,
+    password: 'asdfasdfasd'
+  };
 
-  expect(response.users[0].username).toBe(userOne.input.username);
-
-  // Emails and passwords should not be exposed!
-  expect(response.users[0].email).toBe(null);
-  expect(response.users[0].password).toBe(null);
+  await expect(request(URL, login, variables)).rejects.toThrow();
 });
 
+test('Should login with correct credentials using email', async () => {
+  const variables = {
+    email: userOne.input.email,
+    password: 'Daniel123'
+  };
 
-// test('Should not login with bad credentials', async () => {
-//   const variables = {
-//     email: userOne.input.email,
-//     password: 'asdfasdfasd'
-//   };
-
-//   await expect(request(URL, login, variables)).rejects.toThrow();
-// });
-
-// test('Should login with correct credentials using email', async () => {
-//   const variables = {
-//     email: userOne.input.email,
-//     password: 'Daniel123'
-//   };
-
-//   const response = await request(URL, login, variables);
-//   expect(response.login.token).toBeTruthy();
-// });
+  const response = await request(URL, login, variables);
+  expect(response.login.token).toBeTruthy();
+});
 
 // test('Should login with correct credentials using username', async () => {
 //   const variables = {
