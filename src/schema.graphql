@@ -1,5 +1,4 @@
 type Query {
-  users(query: String): [User!]!
   me: User!
   myCharacter: Character!
 }

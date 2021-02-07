@@ -1,8 +1,8 @@
 
 import { PrismaClient } from '@prisma/client';
 import { request } from 'graphql-request';
-import "core-js/stable";
 import "regenerator-runtime/runtime";
+// import "core-js/stable";
 
 import server from '../src/server';
 import seedDatabase, { userOne } from './utils/seedDatabase';
@@ -43,15 +43,15 @@ test('Should create a new user', async () => {
   expect(user.username).toBe(variables.data.username);
 });
 
-// test('Should expose public profiles', async () => {
-//   const response = await request(URL, getUsers);
+test('Should expose public profiles', async () => {
+  const response = await request(URL, getUsers);
 
-//   expect(response.users[0].username).toBe(userOne.input.username);
+  expect(response.users[0].username).toBe(userOne.input.username);
 
-//   // Emails and passwords should not be exposed!
-//   expect(response.users[0].email).toBe(null);
-//   expect(response.users[0].password).toBe(null);
-// });
+  // Emails and passwords should not be exposed!
+  expect(response.users[0].email).toBe(null);
+  expect(response.users[0].password).toBe(null);
+});
 
 
 // test('Should not login with bad credentials', async () => {
