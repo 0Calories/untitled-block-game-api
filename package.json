@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "env-cmd -f ./config/dev.env nodemon src/index.js --ext js, --exec babel-node",
-    "test": "env-cmd -f ./config/test.env jest --watch --runInBand"
+    "test": "env-cmd -f ./config/test.env jest --watch --runInBand",
+    "update-db": "prisma migrate dev --preview-feature",
+    "update-db-test": "env-cmd -f ./config/test.env prisma migrate dev --preview-feature",
+    "update-dbs": "yarn update-db && yarn update-db-test"
   },
   "license": "MIT",
   "devDependencies": {
