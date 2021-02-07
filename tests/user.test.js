@@ -62,27 +62,27 @@ test('Should login with correct credentials using email', async () => {
   expect(response.login.token).toBeTruthy();
 });
 
-// test('Should login with correct credentials using username', async () => {
-//   const variables = {
-//     username: userOne.input.username,
-//     password: 'Daniel123'
-//   };
+test('Should login with correct credentials using username', async () => {
+  const variables = {
+    username: userOne.input.username,
+    password: 'Daniel123'
+  };
 
-//   const response = await request(URL, login, variables);
-//   expect(response.login.token).toBeTruthy();
-// });
+  const response = await request(URL, login, variables);
+  expect(response.login.token).toBeTruthy();
+});
 
-// test('Should not create user with a short password', async () => {
-//   const variables = {
-//     data: {
-//       name: 'Eric Cao',
-//       email: 'eric@example.com',
-//       password: 'pass'
-//     }
-//   };
+test('Should not create user with a short password', async () => {
+  const variables = {
+    data: {
+      name: 'Eric Cao',
+      email: 'eric@example.com',
+      password: 'pass'
+    }
+  };
 
-//   await expect(request(URL, createUser, variables)).rejects.toThrow();
-// });
+  await expect(request(URL, createUser, variables)).rejects.toThrow();
+});
 
 // test('Should fetch user profile', async () => {
 //   // const client = getClient(userOne.jwt);
