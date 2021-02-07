@@ -6,7 +6,7 @@ For full instructions on setting up a dev environment and more, check out the [W
 Here are some commands you will use frequently when developing the API:
 
 ### Updating your local DBs after modifying schema.prisma
-Local DB:
+Development DB:
 `yarn update-db`
 
 Testing DB:
