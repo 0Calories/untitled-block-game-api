@@ -5,11 +5,18 @@ For full instructions on setting up a dev environment and more, check out the [W
 ## Quick tingz
 Here are some commands you will use frequently when developing the API:
 
-### Applying changes to schema.prisma and regenerating your Prisma client
-```
-npx prisma migrate dev --preview-feature
-npx prisma generate
-```
+### Updating your local DBs after modifying schema.prisma
+Local DB:
+`yarn update-db`
 
-### How to clone DB
- - https://dba.stackexchange.com/questions/10474/postgresql-how-to-create-full-copy-of-database-schema-in-same-database
+Testing DB:
+`yarn update-db-test`
+
+All DBs:
+`yarn update-dbs`
+
+Don't forget to regenerate your Prisma client after making changes to the schema:
+`npx prisma generate`
+
+## Side notes
+ - [How to clone DB](https://dba.stackexchange.com/questions/10474/postgresql-how-to-create-full-copy-of-database-schema-in-same-database)
