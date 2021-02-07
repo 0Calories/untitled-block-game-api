@@ -16,6 +16,7 @@ const userOne = {
 
 const seedDatabase = async () => {
   // Delete all test data
+  await prisma.character.deleteMany();
   await prisma.user.deleteMany();
   // await prisma.post.deleteMany();
   // await prisma.comment.deleteMany();
