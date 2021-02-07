@@ -34,6 +34,7 @@ const Mutation = {
       token: generateToken(user.id)
     };
   },
+
   async deleteUser(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
 
@@ -43,6 +44,7 @@ const Mutation = {
       }
     }, info);
   },
+
   async updateUser(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
 
@@ -57,6 +59,7 @@ const Mutation = {
       data: args.data
     }, info);
   },
+
   async login(parent, args, { prisma }, info) {
     const { email, username, password } = args;
 
@@ -100,6 +103,7 @@ const Mutation = {
       include: { author: true }
     }, info);
   },
+  
   async deletePost(parent, args, { prisma, request }, info) {
     const { id } = args;
     const userId = getUserId(request);
