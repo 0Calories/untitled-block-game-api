@@ -90,6 +90,17 @@ const Mutation = {
     };
   },
 
+  async updateCharacter(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+
+    return await prisma.character.update({
+      where: {
+        id: userId
+      },
+      data: args.data
+    }, info);
+  }
+
   // async createPost(parent, args, { prisma, request }, info) {
   //   const userId = getUserId(request);
 

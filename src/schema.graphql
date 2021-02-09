@@ -9,6 +9,8 @@ type Mutation {
   updateUser(data: UpdateUserInput!): User!
   login(email: String, username: String, password: String!): AuthPayload!
 
+  updateCharacter(data: UpdateCharacterInput!): Character!
+
   createWorld(data: CreateWorldInput!): World!
 
   createPost(data: CreatePostInput!): Post!
@@ -45,6 +47,11 @@ input CreateWorldInput {
 input CreatePostInput {
   title: String!
   body: String
+}
+
+input UpdateCharacterInput {
+  bio: String
+  colour: String
 }
 
 type User {
