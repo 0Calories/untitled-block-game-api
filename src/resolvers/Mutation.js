@@ -92,6 +92,12 @@ const Mutation = {
 
   async updateCharacter(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
+    const { colour } = args.data;
+
+    // Ensure that the colour argument is a proper hex colour code
+    if (colour.length !== 7 || colour.charAt(0) !== '#') {
+      throw new Error('Invalid colour value provided');
+    }
 
     return await prisma.character.update({
       where: {
