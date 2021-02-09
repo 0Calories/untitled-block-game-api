@@ -1,15 +1,16 @@
 
 import { PrismaClient } from '@prisma/client';
-import { request } from 'graphql-request';
+import { request, GraphQLClient } from 'graphql-request';
 import "regenerator-runtime/runtime";
 // import "core-js/stable";
 
 import server from '../src/server';
+import { URL } from './utils/constants';
 import seedDatabase, { userOne } from './utils/seedDatabase';
-import { createUser, login, getUsers } from './utils/operations';
+import { createUser, login, updateCharacter } from './utils/operations';
 
 const prisma = new PrismaClient();
-const URL = 'http://localhost:4000';
+
 
 beforeAll(() => {
   return server.start({ port: 4000 }).then((httpServer) => {
@@ -39,7 +40,15 @@ test('Should create a new user', async () => {
     }
   });
 
+  // Each user should also have a character generated for them
+  const character = await prisma.character.findUnique({
+    where: {
+      id: parseInt(response.createUser.user.id)
+    }
+  });
+
   expect(user).toBeTruthy();
+  expect(character).toBeTruthy();
   expect(user.username).toBe(variables.data.username);
 });
 
@@ -82,6 +91,25 @@ test('Should not create user with a short password', async () => {
   };
 
   await expect(request(URL, createUser, variables)).rejects.toThrow();
+});
+
+test('Should update a user\'s colour and bio', async () => {
+  const variables = {
+    data: {
+      bio: "I know a lot about web dev...",
+      colour: "#F1F2F3"
+    }
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userOne.jwt}`
+    }
+  });
+
+  const response = await graphQLClient.request(updateCharacter, variables);
+  expect(response.updateCharacter.bio).toBe(variables.data.bio);
+  expect(response.updateCharacter.colour).toBe(variables.data.colour);
 });
 
 // test('Should fetch user profile', async () => {

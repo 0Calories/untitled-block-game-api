@@ -25,6 +25,16 @@ const seedDatabase = async () => {
   userOne.user = await prisma.user.create({
     data: userOne.input
   });
+  userOne.jwt = jwt.sign({ userId: userOne.user.id }, process.env.JWT_SECRET);
+
+  // Create a character for the user
+  const character = await prisma.character.create({
+    data: {
+      user: {
+        connect: { id: userOne.user.id }
+      }
+    }
+  });
 };
 
 export { seedDatabase as default, userOne };

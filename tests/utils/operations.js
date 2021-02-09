@@ -25,4 +25,13 @@ const login = gql`
   }
 `;
 
-export { createUser, login };
+const updateCharacter = gql`
+  mutation($data: UpdateCharacterInput!) {
+    updateCharacter(data: $data) {
+      colour
+      bio
+    }
+  }
+`;
+
+export { createUser, login, updateCharacter };
