@@ -61,7 +61,7 @@ const Mutation = {
   },
 
   async login(parent, args, { prisma }, info) {
-    const { email, username, password } = args;
+    const { email, username, password } = args.data;
 
     if (!email && !username) {
       throw new Error('Must provide an email address or username');
@@ -75,7 +75,7 @@ const Mutation = {
     });
 
     if (!user) {
-      throw new Error('Invalid credentials: user not found');
+      throw new Error('Invalid credentials');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);

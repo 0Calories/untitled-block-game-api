@@ -7,7 +7,7 @@ type Mutation {
   createUser(data: CreateUserInput!): AuthPayload!
   deleteUser: User!
   updateUser(data: UpdateUserInput!): User!
-  login(email: String, username: String, password: String!): AuthPayload!
+  login(data: LoginInput!): AuthPayload!
 
   updateCharacter(data: UpdateCharacterInput!): Character!
 
@@ -37,6 +37,12 @@ input UpdateUserInput {
   username: String
   email: String
   password: String
+}
+
+input LoginInput {
+  email: String 
+  username: String 
+  password: String!
 }
 
 input CreateWorldInput {
