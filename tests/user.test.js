@@ -54,17 +54,21 @@ test('Should create a new user', async () => {
 
 test('Should not login with bad credentials', async () => {
   const variables = {
-    email: userOne.input.email,
-    password: 'asdfasdfasd'
+    data: {
+      email: userOne.input.email,
+      password: 'asdfasdfasd'
+    }
   };
 
-  await expect(request(URL, login, variables)).rejects.toThrow();
+  await expect(request(URL, login, variables)).rejects.toThrow('Invalid credentials');
 });
 
 test('Should login with correct credentials using email', async () => {
   const variables = {
-    email: userOne.input.email,
-    password: 'Daniel123'
+    data: {
+      email: userOne.input.email,
+      password: 'Daniel123'
+    }
   };
 
   const response = await request(URL, login, variables);
@@ -73,24 +77,38 @@ test('Should login with correct credentials using email', async () => {
 
 test('Should login with correct credentials using username', async () => {
   const variables = {
-    username: userOne.input.username,
-    password: 'Daniel123'
+    data: {
+      username: userOne.input.username,
+      password: 'Daniel123'
+    }
   };
 
   const response = await request(URL, login, variables);
   expect(response.login.token).toBeTruthy();
 });
 
+test('Should not create user with a short username', async () => {
+  const variables = {
+    data: {
+      username: 'AH!',
+      email: 'eric@example.com',
+      password: 'aVerysecurepassword123'
+    }
+  };
+
+  await expect(request(URL, createUser, variables)).rejects.toThrow('Username must be at least 4 characters long');
+});
+
 test('Should not create user with a short password', async () => {
   const variables = {
     data: {
-      name: 'Eric Cao',
+      username: 'Eric Cao',
       email: 'eric@example.com',
       password: 'pass'
     }
   };
 
-  await expect(request(URL, createUser, variables)).rejects.toThrow();
+  await expect(request(URL, createUser, variables)).rejects.toThrow('Password must be 8 characters or longer');
 });
 
 test('Should update a user\'s colour and bio', async () => {
@@ -110,6 +128,23 @@ test('Should update a user\'s colour and bio', async () => {
   const response = await graphQLClient.request(updateCharacter, variables);
   expect(response.updateCharacter.bio).toBe(variables.data.bio);
   expect(response.updateCharacter.colour).toBe(variables.data.colour);
+});
+
+test('Should reject invalid hex strings when updating character', async () => {
+  const variables = {
+    data: {
+      bio: "I know a lot about web dev...",
+      colour: "wow"
+    }
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userOne.jwt}`
+    }
+  });
+
+  await expect(graphQLClient.request(updateCharacter, variables)).rejects.toThrow('Invalid colour value provided');
 });
 
 // test('Should fetch user profile', async () => {
