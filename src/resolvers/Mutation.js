@@ -95,7 +95,8 @@ const Mutation = {
     const { colour } = args.data;
 
     // Ensure that the colour argument is a proper hex colour code
-    if (colour.length !== 7 || colour.charAt(0) !== '#') {
+    const hexRegex = /^#[0-9A-Fa-f]{6}$|^#[0-9A-Fa-f]{3}$/;
+    if (!hexRegex.test(colour)) {
       throw new Error('Invalid colour value provided');
     }
 
