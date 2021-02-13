@@ -61,7 +61,7 @@ const Mutation = {
   },
 
   async login(parent, args, { prisma }, info) {
-    const { email, username, password } = args;
+    const { email, username, password } = args.data;
 
     if (!email && !username) {
       throw new Error('Must provide an email address or username');
@@ -75,7 +75,7 @@ const Mutation = {
     });
 
     if (!user) {
-      throw new Error('Invalid credentials: user not found');
+      throw new Error('Invalid credentials');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -89,6 +89,24 @@ const Mutation = {
       token: generateToken(user.id)
     };
   },
+
+  async updateCharacter(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const { colour } = args.data;
+
+    // Ensure that the colour argument is a proper hex colour code
+    const hexRegex = /^#[0-9A-Fa-f]{6}$|^#[0-9A-Fa-f]{3}$/;
+    if (!hexRegex.test(colour)) {
+      throw new Error('Invalid colour value provided');
+    }
+
+    return await prisma.character.update({
+      where: {
+        id: userId
+      },
+      data: args.data
+    }, info);
+  }
 
   // async createPost(parent, args, { prisma, request }, info) {
   //   const userId = getUserId(request);

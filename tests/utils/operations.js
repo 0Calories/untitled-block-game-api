@@ -14,8 +14,8 @@ const createUser = gql`
 `;
 
 const login = gql`
-  mutation($email: String, $username: String, $password: String!) {
-    login(email: $email, username: $username, password: $password) {
+  mutation($data: LoginInput!) {
+    login(data: $data) {
       token,
       user {
         id
@@ -25,4 +25,13 @@ const login = gql`
   }
 `;
 
-export { createUser, login };
+const updateCharacter = gql`
+  mutation($data: UpdateCharacterInput!) {
+    updateCharacter(data: $data) {
+      colour
+      bio
+    }
+  }
+`;
+
+export { createUser, login, updateCharacter };
