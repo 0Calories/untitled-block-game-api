@@ -13,9 +13,6 @@ type Mutation {
 
   createWorld(data: CreateWorldInput!): World!
 
-  createPost(data: CreatePostInput!): Post!
-  deletePost(id: Int!): Post!
-
   visitWorld(data: VisitWorldInput!): Character!
 }
 
@@ -52,11 +49,6 @@ input CreateWorldInput {
   description: String
 }
 
-input CreatePostInput {
-  title: String!
-  body: String
-}
-
 input UpdateCharacterInput {
   bio: String
   colour: String
@@ -90,14 +82,6 @@ type World {
   likes: Int
   dislikes: Int 
   creator: User!
-}
-
-type Post {
-  id: Int!
-  title: String!
-  body: String
-  author: User!
-  likes: Int
 }
 
 enum MutationType {

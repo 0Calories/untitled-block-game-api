@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import getUserId from '../utils/getUserId';
 import generateToken from '../utils/generateToken';
 import hashPassword from '../utils/hashPassword';
-import {Query} from './Query'
+import { Query } from './Query'
 import { PrismaClientInitializationError } from '@prisma/client';
 
 
@@ -117,7 +117,7 @@ const Mutation = {
     const { world } = args.data;
 
 
-    const World =  await prisma.character.findUnique({
+    const World = await prisma.character.findUnique({
       where: {
         id: userId
       },
@@ -135,7 +135,7 @@ const Mutation = {
       }
     });
 
-    if(!curBobux){
+    if (!curBobux) {
       throw new Error('Shit...');
     }
 
@@ -151,93 +151,19 @@ const Mutation = {
 
   async createWorld(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
-    const {name, description} = args.data;
 
-    //const world = await prisma.world.create({
-    //  data: 
-    //      {
-    //    name: name,
-    //    description: description,
-    //    creator: {
-    //      connect: {id : userId}
-    //    }   
-    //  },
-    //  include: {
-    //    creator: true,
-    //  }
-    //}, info);
-
-    const character = await prisma.character.update({
-      where:{
-        id: userId
-      },
+    return await prisma.world.create({
       data: {
-        worlds: {
-          create:{
-            name: name,
-            description: description,
-            creator: {
-              connect: {id: userId}
-            }
-          }
-            
+        ...args.data,
+        creator: {
+          connect: { id: userId }
         }
-      },
-      include: {
-        worlds: true
-      }
-    }, info);
-
-
-    const world =  prisma.world.findUnique({
-      where: {
-        id: userId
       },
       include: {
         creator: true,
       }
     }, info);
-
-    return world
   },
-
-  // async createPost(parent, args, { prisma, request }, info) {
-  //   const userId = getUserId(request);
-
-  //   return await prisma.post.create({
-  //     data: {
-  //       ...args.data,
-  //       author: {
-  //         connect: { id: userId }
-  //       }
-  //     },
-  //     include: { author: true }
-  //   }, info);
-  // },
-
-  // async deletePost(parent, args, { prisma, request }, info) {
-  //   const { id } = args;
-  //   const userId = getUserId(request);
-
-  //   // TODO: This is kind of sloppy but the only way to do this at the moment.
-  //   // When Prisma 2 reintroduces the "exists" operation, use that here instead.
-  //   const posts = await prisma.post.findMany({
-  //     where: {
-  //       id,
-  //       AND: [{ authorId: userId }]
-  //     }
-  //   });
-
-  //   if (!posts[0]) {
-  //     throw new Error('Post not found or unauthorized operation');
-  //   }
-
-  //   return await prisma.post.delete({
-  //     where: {
-  //       id
-  //     }
-  //   }, info);
-  // }
 };
 
 export default Mutation;

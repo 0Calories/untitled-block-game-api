@@ -17,6 +17,9 @@ const Query = {
     return prisma.character.findUnique({
       where: {
         id: userId
+      },
+      include: {
+        worlds: true
       }
     }, info);
   }

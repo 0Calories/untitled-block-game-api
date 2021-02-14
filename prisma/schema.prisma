@@ -18,12 +18,12 @@ model User {
 }
 
 model Character {
-  user   User   @relation(fields: [id], references: [id])
-  id     Int    @unique
-  colour String @default("#FFFFFF")
-  bobux  Int    @default(0)
-  bio        String?
-  worlds     World[]
+  user   User    @relation(fields: [id], references: [id])
+  id     Int     @unique
+  colour String  @default("#FFFFFF")
+  bobux  Int     @default(0)
+  bio    String?
+  worlds World[]
 }
 
 model World {
@@ -33,7 +33,7 @@ model World {
   visits      Int       @default(0)
   likes       Int       @default(0)
   dislikes    Int       @default(0)
-  creator     User      @relation(fields: [creatorId], references: [id])
+  creator     Character @relation(fields: [creatorId], references: [id])
   creatorId   Int
   created_at  DateTime? @default(now())
   updated_at  DateTime? @default(now())
