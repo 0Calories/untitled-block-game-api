@@ -3,6 +3,9 @@ import bcrypt from 'bcryptjs';
 import getUserId from '../utils/getUserId';
 import generateToken from '../utils/generateToken';
 import hashPassword from '../utils/hashPassword';
+import {Query} from './Query'
+import { PrismaClientInitializationError } from '@prisma/client';
+
 
 const Mutation = {
   async createUser(parent, args, { prisma }, info) {
@@ -106,7 +109,97 @@ const Mutation = {
       },
       data: args.data
     }, info);
-  }
+  },
+
+
+  async visitWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const { world } = args.data;
+
+
+    const World =  await prisma.character.findUnique({
+      where: {
+        id: userId
+      },
+      select: {
+        bobux: true
+      }
+    });
+
+    const curBobux = await prisma.character.findUnique({
+      where: {
+        id: userId
+      },
+      select: {
+        bobux: true
+      }
+    });
+
+    if(!curBobux){
+      throw new Error('Shit...');
+    }
+
+    args.data.bobux += curBobux.bobux
+
+    return await prisma.character.update({
+      where: {
+        id: userId
+      },
+      data: args.data
+    }, info);
+  },
+
+  async createWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const {name, description} = args.data;
+
+    //const world = await prisma.world.create({
+    //  data: 
+    //      {
+    //    name: name,
+    //    description: description,
+    //    creator: {
+    //      connect: {id : userId}
+    //    }   
+    //  },
+    //  include: {
+    //    creator: true,
+    //  }
+    //}, info);
+
+    const character = await prisma.character.update({
+      where:{
+        id: userId
+      },
+      data: {
+        worlds: {
+          create:{
+            name: name,
+            description: description,
+            creator: {
+              connect: {id: userId}
+            }
+          }
+            
+        }
+      },
+      include: {
+        worlds: true
+      }
+    }, info);
+
+
+    const world =  prisma.world.findUnique({
+      where: {
+        id: userId
+      },
+      include: {
+        creator: true,
+      }
+    }, info);
+
+    return world
+  },
 
   // async createPost(parent, args, { prisma, request }, info) {
   //   const userId = getUserId(request);
