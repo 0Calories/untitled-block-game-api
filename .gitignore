@@ -2,3 +2,4 @@ node_modules
 prisma/.env
 prisma/migrations
 config
+yarn-error.log
