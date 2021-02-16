@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import getUserId from '../utils/getUserId';
 import generateToken from '../utils/generateToken';
 import hashPassword from '../utils/hashPassword';
+import { WORLD_VISIT_REWARD } from '../utils/constants';
 import { Query } from './Query'
 import { PrismaClientInitializationError } from '@prisma/client';
 
@@ -111,44 +112,6 @@ const Mutation = {
     }, info);
   },
 
-
-  async visitWorld(parent, args, { prisma, request }, info) {
-    const userId = getUserId(request);
-    const { world } = args.data;
-
-
-    const World = await prisma.character.findUnique({
-      where: {
-        id: userId
-      },
-      select: {
-        bobux: true
-      }
-    });
-
-    const curBobux = await prisma.character.findUnique({
-      where: {
-        id: userId
-      },
-      select: {
-        bobux: true
-      }
-    });
-
-    if (!curBobux) {
-      throw new Error('Shit...');
-    }
-
-    args.data.bobux += curBobux.bobux
-
-    return await prisma.character.update({
-      where: {
-        id: userId
-      },
-      data: args.data
-    }, info);
-  },
-
   async createWorld(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
 
@@ -159,11 +122,43 @@ const Mutation = {
           connect: { id: userId }
         }
       },
-      include: {
-        creator: true,
-      }
+      include: { creator: true }
     }, info);
   },
+
+  async visitWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const { worldId } = args;
+
+    // Search the database for the world 
+    const world = await prisma.world.findUnique({
+      where: {
+        id: worldId
+      },
+      include: { creator: true }
+    });
+
+    // Verify that the user hasn't visited this place in the last 3 hours
+    // TODO: Code for this check here
+
+    // Award the world's creator with bobux
+    const creator = await prisma.character.findUnique({
+      where: {
+        id: world.creator.id
+      }
+    });
+
+    await prisma.character.update({
+      where: {
+        id: creator.id
+      },
+      data: {
+        bobux: creator.bobux + WORLD_VISIT_REWARD
+      }
+    });
+
+    return world;
+  }
 };
 
 export default Mutation;

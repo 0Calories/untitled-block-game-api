@@ -13,7 +13,7 @@ type Mutation {
 
   createWorld(data: CreateWorldInput!): World!
 
-  visitWorld(data: VisitWorldInput!): Character!
+  visitWorld(worldId: Int!): World!
 }
 
 # type Subscription {
