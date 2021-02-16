@@ -18,28 +18,28 @@ model User {
 }
 
 model Character {
-  user   User    @relation(fields: [id], references: [id])
-  id     Int     @id
-  colour String  @default("#FFFFFF")
-  bobux  Int     @default(0)
-  bio    String?
-  worlds World[]
-  World  World[] @relation("creator")
+  user     User       @relation(fields: [id], references: [id])
+  id       Int        @id
+  colour   String     @default("#FFFFFF")
+  bobux    Int        @default(0)
+  bio      String?
+  worlds   World[]
+  Visitors Visitors[]
 }
 
 model World {
-  id          Int         @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String?
-  visits      Int         @default(0)
-  likes       Int         @default(0)
-  dislikes    Int         @default(0)
-  creator     Character   @relation("creator", fields: [creatorId], references: [id])
+  visits      Int        @default(0)
+  likes       Int        @default(0)
+  dislikes    Int        @default(0)
+  creator     Character  @relation(fields: [creatorId], references: [id])
   creatorId   Int
-  created_at  DateTime?   @default(now())
-  updated_at  DateTime?   @default(now())
+  created_at  DateTime?  @default(now())
+  updated_at  DateTime?  @default(now())
   comments    Comment[]
-  visitors    Character[]
+  Visitors    Visitors[]
 }
 
 model Comment {
@@ -50,4 +50,15 @@ model Comment {
   created_at DateTime? @default(now())
   user       User      @relation(fields: [userId], references: [id])
   world      World     @relation(fields: [worldId], references: [id])
+}
+
+// Relational table for world visitors
+model Visitors {
+  visitor   Character @relation(fields: [visitorId], references: [id])
+  world     World     @relation(fields: [worldId], references: [id])
+  visitorId Int
+  worldId   Int
+  visitDate DateTime  @default(now())
+
+  @@id([visitorId, worldId])
 }
