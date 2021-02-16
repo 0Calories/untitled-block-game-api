@@ -39,7 +39,7 @@ model World {
   created_at  DateTime?  @default(now())
   updated_at  DateTime?  @default(now())
   comments    Comment[]
-  Visitors    Visitors[]
+  visitors    Visitors[]
 }
 
 model Comment {

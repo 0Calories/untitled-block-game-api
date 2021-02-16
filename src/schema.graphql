@@ -72,6 +72,7 @@ type Character {
   bobux: Int!
   bio: String
   worlds: [World]
+  visitedWorld: [World]
 }
 
 type World {
@@ -82,6 +83,9 @@ type World {
   likes: Int
   dislikes: Int 
   creator: User!
+  visitors: [Character]
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 enum MutationType {
