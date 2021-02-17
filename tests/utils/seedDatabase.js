@@ -14,8 +14,18 @@ const userOne = {
   jwt: undefined
 };
 
+const worldOne = {
+  input: {
+    name: 'Hide n Seek',
+    description: 'Hide from the seekers and hope you don\'t get caught'
+  },
+  creator: userOne,
+  world: undefined
+}
+
 const seedDatabase = async () => {
   // Delete all test data
+  await prisma.world.deleteMany();
   await prisma.character.deleteMany();
   await prisma.user.deleteMany();
   // await prisma.post.deleteMany();
@@ -28,13 +38,23 @@ const seedDatabase = async () => {
   userOne.jwt = jwt.sign({ userId: userOne.user.id }, process.env.JWT_SECRET);
 
   // Create a character for the user
-  const character = await prisma.character.create({
+  await prisma.character.create({
     data: {
       user: {
         connect: { id: userOne.user.id }
       }
     }
   });
+
+  // Create worlds
+  worldOne.world = await prisma.world.create({
+    data: {
+      ...worldOne.input,
+      creator: {
+        connect: { id: userOne.user.id }
+      }
+    }
+  })
 };
 
-export { seedDatabase as default, userOne };
+export { seedDatabase as default, userOne, worldOne };
