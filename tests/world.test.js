@@ -77,5 +77,51 @@ test('Should award currency to owner of visited place', async () => {
     }
   });
 
-  expect(creatorAfterVisit.bobux).toEqual(creatorBeforeVisit.bobux + WORLD_VISIT_REWARD)
+  expect(creatorAfterVisit.bobux).toEqual(creatorBeforeVisit.bobux + WORLD_VISIT_REWARD);
+
+  const worldAfterVisit = await prisma.world.findUnique({
+    where: {
+      id: variables.worldId
+    }
+  });
+
+  expect(worldAfterVisit.visits).toEqual(1);
+});
+
+test('Should not award currency to world creator if player visits world twice consecutively', async () => {
+  const variables = {
+    worldId: worldOne.world.id
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userTwo.jwt}`
+    }
+  });
+
+  const creatorBeforeVisit = await prisma.character.findUnique({
+    where: {
+      id: worldOne.creator.id
+    }
+  });
+
+  // Visit the world twice
+  await graphQLClient.request(visitWorld, variables);
+  await graphQLClient.request(visitWorld, variables);
+
+  const creatorAfterVisit = await prisma.character.findUnique({
+    where: {
+      id: worldOne.creator.id
+    }
+  });
+
+  expect(creatorAfterVisit.bobux).toEqual(creatorBeforeVisit.bobux + WORLD_VISIT_REWARD);
+
+  const worldAfterVisit = await prisma.world.findUnique({
+    where: {
+      id: variables.worldId
+    }
+  });
+
+  expect(worldAfterVisit.visits).toEqual(1);
 });
