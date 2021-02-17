@@ -6,8 +6,9 @@ import "regenerator-runtime/runtime";
 
 import server from '../src/server';
 import { URL } from './utils/constants';
-import seedDatabase, { userOne, worldOne } from './utils/seedDatabase';
-import { createWorld } from './utils/operations';
+import seedDatabase, { userOne, userTwo, worldOne } from './utils/seedDatabase';
+import { createWorld, visitWorld } from './utils/operations';
+import { WORLD_VISIT_REWARD, HOURS_BETWEEN_VISITS } from '../src/utils/constants';
 
 const prisma = new PrismaClient();
 
@@ -49,4 +50,32 @@ test('Should create a new world', async () => {
   expect(world).toBeTruthy();
   expect(world.name).toBe(variables.data.name);
   expect(world.description).toBe(variables.data.description);
+});
+
+test('Should award currency to owner of visited place', async () => {
+  const variables = {
+    worldId: worldOne.world.id
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userTwo.jwt}`
+    }
+  });
+
+  const creatorBeforeVisit = await prisma.character.findUnique({
+    where: {
+      id: worldOne.creator.id
+    }
+  });
+
+  await graphQLClient.request(visitWorld, variables);
+
+  const creatorAfterVisit = await prisma.character.findUnique({
+    where: {
+      id: worldOne.creator.id
+    }
+  });
+
+  expect(creatorAfterVisit.bobux).toEqual(creatorBeforeVisit.bobux + WORLD_VISIT_REWARD)
 });

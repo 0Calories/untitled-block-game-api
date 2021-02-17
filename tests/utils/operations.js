@@ -44,4 +44,18 @@ const createWorld = gql`
   }
 `;
 
-export { createUser, login, updateCharacter, createWorld };
+const visitWorld = gql`
+  mutation($worldId: Int!) {
+    visitWorld(worldId: $worldId) {
+      id
+      visits
+      name
+      description
+      creator {
+        bobux
+      }
+    }
+  }
+`;
+
+export { createUser, login, updateCharacter, createWorld, visitWorld };
