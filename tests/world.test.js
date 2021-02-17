@@ -125,3 +125,33 @@ test('Should not award currency to world creator if player visits world twice co
 
   expect(worldAfterVisit.visits).toEqual(1);
 });
+
+test('Should not award currency if world creator is visiting their own world', async () => {
+  const variables = {
+    worldId: worldOne.world.id
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userOne.jwt}`
+    }
+  });
+
+  await graphQLClient.request(visitWorld, variables);
+
+  const creator = await prisma.character.findUnique({
+    where: {
+      id: worldOne.creator.id
+    }
+  });
+
+  expect(creator.bobux).toEqual(0);
+
+  const worldAfterVisit = await prisma.world.findUnique({
+    where: {
+      id: variables.worldId
+    }
+  });
+
+  expect(worldAfterVisit.visits).toEqual(0);
+});
