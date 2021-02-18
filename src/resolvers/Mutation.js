@@ -169,6 +169,13 @@ const Mutation = {
       throw new Error('Not authorized to delete this world');
     }
 
+    // Delete all entries in the Visitor table containing this world
+    await prisma.visitor.deleteMany({
+      where: {
+        worldId: args.world
+      }
+    });
+
     return await prisma.world.delete({
       where: {
         id: args.world
@@ -198,7 +205,7 @@ const Mutation = {
       return world;
     }
 
-    const lastVisit = await prisma.visitors.findUnique({
+    const lastVisit = await prisma.visitor.findUnique({
       where: {
         visitorId_worldId: {
           visitorId: userId,
@@ -217,7 +224,7 @@ const Mutation = {
         await applyVisit(world, prisma);
 
         // Update the visited date 
-        await prisma.visitors.update({
+        await prisma.visitor.update({
           where: {
             visitorId_worldId: {
               visitorId: userId,
@@ -231,7 +238,7 @@ const Mutation = {
       }
 
     } else {
-      await prisma.visitors.create({
+      await prisma.visitor.create({
         data: {
           visitor: {
             connect: { id: userId }
