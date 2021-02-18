@@ -125,6 +125,36 @@ const Mutation = {
     }, info);
   },
 
+  async updateWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const { world, name, description } = args.data;
+
+    if (!name && !description) {
+      throw new Error('Please provide a new name or description');
+    }
+
+    const worldToUpdate = await prisma.world.findUnique({
+      where: {
+        id: world
+      },
+      include: { creator: true }
+    });
+
+    if (worldToUpdate.creator.id !== userId) {
+      throw new Error('Not authorized to update this world');
+    }
+
+    return await prisma.world.update({
+      where: {
+        id: world
+      },
+      data: {
+        name,
+        description
+      }
+    }, info);
+  },
+
   // Warning: This mutation is quite a mess, but I'm unsure if it can be optimized
   async visitWorld(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);

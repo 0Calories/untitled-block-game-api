@@ -12,6 +12,7 @@ type Mutation {
   updateCharacter(data: UpdateCharacterInput!): Character!
 
   createWorld(data: CreateWorldInput!): World!
+  updateWorld(data: UpdateWorldInput!): World!
 
   visitWorld(worldId: Int!): World!
 }
@@ -46,6 +47,12 @@ input LoginInput {
 
 input CreateWorldInput {
   name: String!
+  description: String
+}
+
+input UpdateWorldInput {
+  world: Int!
+  name: String
   description: String
 }
 
