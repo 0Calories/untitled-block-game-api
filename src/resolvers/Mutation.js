@@ -3,6 +3,9 @@ import bcrypt from 'bcryptjs';
 import getUserId from '../utils/getUserId';
 import generateToken from '../utils/generateToken';
 import hashPassword from '../utils/hashPassword';
+import applyVisit from '../utils/applyVisit';
+import { HOURS_BETWEEN_VISITS } from '../utils/constants';
+
 
 const Mutation = {
   async createUser(parent, args, { prisma }, info) {
@@ -106,45 +109,93 @@ const Mutation = {
       },
       data: args.data
     }, info);
+  },
+
+  async createWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+
+    return await prisma.world.create({
+      data: {
+        ...args.data,
+        creator: {
+          connect: { id: userId }
+        }
+      },
+      include: { creator: true }
+    }, info);
+  },
+
+  // Warning: This mutation is quite a mess, but I'm unsure if it can be optimized
+  async visitWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const { worldId } = args;
+
+    // Search the database for the world 
+    const world = await prisma.world.findUnique({
+      where: {
+        id: worldId
+      },
+      include: { creator: true }
+    });
+
+    if (!world) {
+      throw new Error(`Could not find world with id ${worldId}`);
+    }
+
+    // Nothing else needs to be done if the visitor is the owner of the world
+    if (world.creator.id === userId) {
+      return world;
+    }
+
+    const lastVisit = await prisma.visitors.findUnique({
+      where: {
+        visitorId_worldId: {
+          visitorId: userId,
+          worldId
+        }
+      }
+    });
+
+    if (lastVisit) {
+      // Ensure that the creator is not paid unless 3 hours have passed since the last visit
+      const currentDate = new Date();
+      const hoursSinceLastVisit = Math.abs(currentDate - lastVisit.visitDate) / 36e5;
+
+      console.log(`Hours since last visit: ${hoursSinceLastVisit}`);
+      if (hoursSinceLastVisit >= HOURS_BETWEEN_VISITS) {
+        await applyVisit(world, prisma);
+
+        // Update the visited date 
+        await prisma.visitors.update({
+          where: {
+            visitorId_worldId: {
+              visitorId: userId,
+              worldId
+            }
+          },
+          data: {
+            visitDate: new Date()
+          }
+        })
+      }
+
+    } else {
+      await prisma.visitors.create({
+        data: {
+          visitor: {
+            connect: { id: userId }
+          },
+          world: {
+            connect: { id: worldId }
+          }
+        }
+      });
+
+      await applyVisit(world, prisma);
+    }
+
+    return world;
   }
-
-  // async createPost(parent, args, { prisma, request }, info) {
-  //   const userId = getUserId(request);
-
-  //   return await prisma.post.create({
-  //     data: {
-  //       ...args.data,
-  //       author: {
-  //         connect: { id: userId }
-  //       }
-  //     },
-  //     include: { author: true }
-  //   }, info);
-  // },
-
-  // async deletePost(parent, args, { prisma, request }, info) {
-  //   const { id } = args;
-  //   const userId = getUserId(request);
-
-  //   // TODO: This is kind of sloppy but the only way to do this at the moment.
-  //   // When Prisma 2 reintroduces the "exists" operation, use that here instead.
-  //   const posts = await prisma.post.findMany({
-  //     where: {
-  //       id,
-  //       AND: [{ authorId: userId }]
-  //     }
-  //   });
-
-  //   if (!posts[0]) {
-  //     throw new Error('Post not found or unauthorized operation');
-  //   }
-
-  //   return await prisma.post.delete({
-  //     where: {
-  //       id
-  //     }
-  //   }, info);
-  // }
 };
 
 export default Mutation;

@@ -13,8 +13,7 @@ type Mutation {
 
   createWorld(data: CreateWorldInput!): World!
 
-  createPost(data: CreatePostInput!): Post!
-  deletePost(id: Int!): Post!
+  visitWorld(worldId: Int!): World!
 }
 
 # type Subscription {
@@ -50,14 +49,14 @@ input CreateWorldInput {
   description: String
 }
 
-input CreatePostInput {
-  title: String!
-  body: String
-}
-
 input UpdateCharacterInput {
   bio: String
   colour: String
+}
+
+input VisitWorldInput {
+  world: Int!
+  character: Int!
 }
 
 type User {
@@ -73,6 +72,7 @@ type Character {
   bobux: Int!
   bio: String
   worlds: [World]
+  visitedWorld: [World]
 }
 
 type World {
@@ -82,15 +82,10 @@ type World {
   visits: Int
   likes: Int
   dislikes: Int 
-  creator: User!
-}
-
-type Post {
-  id: Int!
-  title: String!
-  body: String
-  author: User!
-  likes: Int
+  creator: Character!
+  visitors: [Character]
+  createdAt: String!
+  updatedAt: String!
 }
 
 enum MutationType {
@@ -98,3 +93,4 @@ enum MutationType {
   UPDATED
   DELETED
 }
+

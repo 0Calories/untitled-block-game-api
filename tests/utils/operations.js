@@ -31,7 +31,31 @@ const updateCharacter = gql`
       colour
       bio
     }
+  }           
+`;
+
+const createWorld = gql`
+  mutation($data: CreateWorldInput!) {
+    createWorld(data: $data) {
+      id
+      name
+      description
+    }
   }
 `;
 
-export { createUser, login, updateCharacter };
+const visitWorld = gql`
+  mutation($worldId: Int!) {
+    visitWorld(worldId: $worldId) {
+      id
+      visits
+      name
+      description
+      creator {
+        bobux
+      }
+    }
+  }
+`;
+
+export { createUser, login, updateCharacter, createWorld, visitWorld };
