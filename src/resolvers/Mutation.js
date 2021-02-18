@@ -127,7 +127,7 @@ const Mutation = {
 
   async updateWorld(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
-    const { world, name, description } = args.data;
+    const { worldId, name, description } = args.data;
 
     if (!name && !description) {
       throw new Error('Please provide a new name or description');
@@ -135,7 +135,7 @@ const Mutation = {
 
     const worldToUpdate = await prisma.world.findUnique({
       where: {
-        id: world
+        id: worldId
       },
       include: { creator: true }
     });
@@ -146,7 +146,7 @@ const Mutation = {
 
     return await prisma.world.update({
       where: {
-        id: world
+        id: worldId
       },
       data: {
         name,
@@ -160,7 +160,7 @@ const Mutation = {
 
     const worldToDelete = await prisma.world.findUnique({
       where: {
-        id: args.world
+        id: args.worldId
       },
       include: { creator: true }
     });
@@ -172,13 +172,13 @@ const Mutation = {
     // Delete all entries in the Visitor table containing this world
     await prisma.visitor.deleteMany({
       where: {
-        worldId: args.world
+        worldId: args.worldId
       }
     });
 
     return await prisma.world.delete({
       where: {
-        id: args.world
+        id: args.worldId
       }
     });
   },

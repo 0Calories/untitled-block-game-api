@@ -7,7 +7,7 @@ import "regenerator-runtime/runtime";
 import server from '../src/server';
 import { URL } from './utils/constants';
 import seedDatabase, { userOne, userTwo, worldOne } from './utils/seedDatabase';
-import { createWorld, visitWorld } from './utils/operations';
+import { createWorld, visitWorld, updateWorld, deleteWorld } from './utils/operations';
 import { WORLD_VISIT_REWARD, HOURS_BETWEEN_VISITS } from '../src/utils/constants';
 
 const prisma = new PrismaClient();
@@ -155,3 +155,98 @@ test('Should not reward world creator if they visit their own world', async () =
 
   expect(worldAfterVisit.visits).toEqual(0);
 });
+
+test('Should update a world when authorized', async () => {
+  const variables = {
+    data: {
+      worldId: worldOne.world.id,
+      name: 'My Renamed World',
+      description: 'Thanks for the bobux, kind stranger!'
+    }
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userOne.jwt}`
+    }
+  });
+
+  const response = await graphQLClient.request(updateWorld, variables);
+
+  expect(response.updateWorld.name).toBe(variables.data.name);
+  expect(response.updateWorld.description).toBe(variables.data.description);
+});
+
+test('Should delete a world when authorized', async () => {
+  const variables = {
+    worldId: worldOne.world.id
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userOne.jwt}`
+    }
+  });
+
+  // Check that the world exists prior to deletion
+  const worldBeforeDeletion = await prisma.world.findUnique({
+    where: {
+      id: variables.worldId
+    }
+  });
+  expect(worldBeforeDeletion).toBeTruthy();
+
+  await graphQLClient.request(deleteWorld, variables);
+
+  // World should no longer exist
+  const worldAfterDeletion = await prisma.world.findUnique({
+    where: {
+      id: variables.worldId
+    }
+  });
+
+  expect(worldAfterDeletion).toBeFalsy();
+});
+
+test('Should delete all related Visitor entries after deleting a world', async () => {
+  const variables = {
+    worldId: worldOne.world.id
+  };
+
+  let graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userTwo.jwt}`
+    }
+  });
+
+  // Visit the world
+  await graphQLClient.request(visitWorld, variables);
+
+  // Ensure the Visitor table has a new entry
+  const visitorBeforeDeletion = await prisma.visitor.findFirst({
+    where: {
+      worldId: worldOne.world.id
+    }
+  });
+
+  expect(visitorBeforeDeletion).toBeTruthy();
+
+  // Login as the creator of the world, and delete it
+  graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userOne.jwt}`
+    }
+  });
+
+  await graphQLClient.request(deleteWorld, variables);
+
+  // Confirm that the entry in the Visitor table no longer exists
+  const visitorAfterDeletion = await prisma.visitor.findFirst({
+    where: {
+      worldId: worldOne.world.id
+    }
+  });
+
+  expect(visitorAfterDeletion).toBeFalsy();
+});
+
