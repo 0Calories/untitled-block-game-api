@@ -88,7 +88,7 @@ test('Should award currency to owner of visited place', async () => {
   expect(worldAfterVisit.visits).toEqual(1);
 });
 
-test('Should not award currency to world creator if player visits world twice consecutively', async () => {
+test('Should not reward world creator if player visits world twice consecutively', async () => {
   const variables = {
     worldId: worldOne.world.id
   };
@@ -126,7 +126,7 @@ test('Should not award currency to world creator if player visits world twice co
   expect(worldAfterVisit.visits).toEqual(1);
 });
 
-test('Should not award currency if world creator is visiting their own world', async () => {
+test('Should not reward world creator if they visit their own world', async () => {
   const variables = {
     worldId: worldOne.world.id
   };
