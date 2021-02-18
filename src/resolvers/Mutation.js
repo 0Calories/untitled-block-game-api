@@ -155,6 +155,27 @@ const Mutation = {
     }, info);
   },
 
+  async deleteWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+
+    const worldToDelete = await prisma.world.findUnique({
+      where: {
+        id: args.world
+      },
+      include: { creator: true }
+    });
+
+    if (worldToDelete.creator.id !== userId) {
+      throw new Error('Not authorized to delete this world');
+    }
+
+    return await prisma.world.delete({
+      where: {
+        id: args.world
+      }
+    });
+  },
+
   // Warning: This mutation is quite a mess, but I'm unsure if it can be optimized
   async visitWorld(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);

@@ -13,6 +13,7 @@ type Mutation {
 
   createWorld(data: CreateWorldInput!): World!
   updateWorld(data: UpdateWorldInput!): World!
+  deleteWorld(world: Int!): World!
 
   visitWorld(worldId: Int!): World!
 }
