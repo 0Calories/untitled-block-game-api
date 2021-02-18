@@ -125,6 +125,64 @@ const Mutation = {
     }, info);
   },
 
+  async updateWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const { worldId, name, description } = args.data;
+
+    if (!name && !description) {
+      throw new Error('Please provide a new name or description');
+    }
+
+    const worldToUpdate = await prisma.world.findUnique({
+      where: {
+        id: worldId
+      },
+      include: { creator: true }
+    });
+
+    if (worldToUpdate.creator.id !== userId) {
+      throw new Error('Not authorized to update this world');
+    }
+
+    return await prisma.world.update({
+      where: {
+        id: worldId
+      },
+      data: {
+        name,
+        description
+      }
+    }, info);
+  },
+
+  async deleteWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+
+    const worldToDelete = await prisma.world.findUnique({
+      where: {
+        id: args.worldId
+      },
+      include: { creator: true }
+    });
+
+    if (worldToDelete.creator.id !== userId) {
+      throw new Error('Not authorized to delete this world');
+    }
+
+    // Delete all entries in the Visitor table containing this world
+    await prisma.visitor.deleteMany({
+      where: {
+        worldId: args.worldId
+      }
+    });
+
+    return await prisma.world.delete({
+      where: {
+        id: args.worldId
+      }
+    });
+  },
+
   // Warning: This mutation is quite a mess, but I'm unsure if it can be optimized
   async visitWorld(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
@@ -147,7 +205,7 @@ const Mutation = {
       return world;
     }
 
-    const lastVisit = await prisma.visitors.findUnique({
+    const lastVisit = await prisma.visitor.findUnique({
       where: {
         visitorId_worldId: {
           visitorId: userId,
@@ -166,7 +224,7 @@ const Mutation = {
         await applyVisit(world, prisma);
 
         // Update the visited date 
-        await prisma.visitors.update({
+        await prisma.visitor.update({
           where: {
             visitorId_worldId: {
               visitorId: userId,
@@ -180,7 +238,7 @@ const Mutation = {
       }
 
     } else {
-      await prisma.visitors.create({
+      await prisma.visitor.create({
         data: {
           visitor: {
             connect: { id: userId }

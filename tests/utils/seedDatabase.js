@@ -37,7 +37,7 @@ const worldOne = {
 
 const seedDatabase = async () => {
   // Delete all test data
-  await prisma.visitors.deleteMany();
+  await prisma.visitor.deleteMany();
   await prisma.world.deleteMany();
   await prisma.character.deleteMany();
   await prisma.user.deleteMany();
