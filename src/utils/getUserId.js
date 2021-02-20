@@ -1,7 +1,13 @@
 import jwt from 'jsonwebtoken';
 
-const getUserId = (request, requireAuth = true) => {
-  const header = request.request ? request.request.headers.authorization : request.connection.context.Authorization;
+const getUserId = (request, requireAuth = true, isRestCall = false) => {
+  let header;
+
+  if (isRestCall) {
+    header = request.headers.authorization;
+  } else {
+    header = request.request ? request.request.headers.authorization : request.connection.context.Authorization;
+  }
 
   if (header) {
     const token = header.replace('Bearer ', '');
