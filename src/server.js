@@ -1,6 +1,7 @@
 import { GraphQLServer, PubSub } from 'graphql-yoga';
 import { PrismaClient } from '@prisma/client';
 import fileUpload from 'express-fileupload';
+import request from 'request';
 
 import { resolvers, fragmentReplacements } from './resolvers/index';
 import uploadFile from './utils/uploadFile';
@@ -56,6 +57,15 @@ server.post('/worlds/:worldId', async (req, res) => {
 
     res.send(err.message);
   }
+});
+
+// Custom endpoint for downloading world files
+server.get('/worlds/:worldId', async (req, res) => {
+  const worldId = parseInt(req.params.worldId);
+
+  // TODO: Need to implement 
+  request(`${process.env.S3_BUCKET_URL}/${worldId}/world.block`)
+    .pipe(res.set('Content-Type', 'application/octet-stream').set('Content-Disposition', 'inline; filename="world.block"'));
 });
 
 export default server;
