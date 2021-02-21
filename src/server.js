@@ -4,7 +4,7 @@ import fileUpload from 'express-fileupload';
 
 import { resolvers, fragmentReplacements } from './resolvers/index';
 import uploadFile from './utils/uploadFile';
-import getUserId from './utils/getUserId';
+import { getUserIdRest } from './utils/getUserId';
 
 const prisma = new PrismaClient();
 const pubsub = new PubSub();
@@ -25,13 +25,37 @@ const server = new GraphQLServer({
 server.use(fileUpload());
 
 // Custom endpoint for handling world file uploads
-server.post('/worlds/:worldId', (req, res) => {
-  const worldId = req.params.worldId;
+server.post('/worlds/:worldId', async (req, res) => {
+  try {
+    const userId = getUserIdRest(req, res);
+    const worldId = parseInt(req.params.worldId);
 
-  // Check if the authenticated user has rights to this world
-  const userId = getUserId(req, true, true);
+    // Check if the authenticated user has rights to this world
+    const world = await prisma.world.findUnique({
+      where: {
+        id: worldId
+      },
+      select: { creator: true }
+    });
 
-  uploadFile(req.files.file, worldId, res);
+    if (!world) {
+      res.status(404);
+      throw new Error(`World with id ${worldId} does not exist`);
+    }
+
+    if (userId !== world.creator.id) {
+      res.status(401).send('Not authorized to upload to this world');
+    }
+
+    await uploadFile(req.files.file, worldId, res);
+  } catch (err) {
+    // Set the status code to 400 if it was not already set to an error code
+    if (res.statusCode === 200) {
+      res.status(400);
+    }
+
+    res.send(err.message);
+  }
 });
 
 export default server;

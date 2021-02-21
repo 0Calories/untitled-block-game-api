@@ -6,7 +6,7 @@ aws.config.update({
   region: process.env.AWS_REGION
 });
 
-const uploadFile = (file, worldId, res) => {
+const uploadFile = async (file, worldId, res) => {
   const s3 = new aws.S3();
   const fileContent = Buffer.from(file.data, 'binary');
 
