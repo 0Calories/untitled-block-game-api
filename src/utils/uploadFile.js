@@ -22,8 +22,7 @@ const uploadFile = async (file, worldId, res) => {
     }
     res.send({
       "response_code": 200,
-      "response_message": "Success",
-      "response_data": data
+      "response_message": "World file uploaded successfully!"
     });
   });
 };
