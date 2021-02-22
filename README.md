@@ -2,7 +2,7 @@
 Welcome to the Untitled Block Game API repository!
 For full instructions on setting up a dev environment and more, check out the [Wiki](https://github.com/0Calories/untitled-block-game-api/wiki) 
 
-## Quick tingz
+## Quick commands
 Here are some commands you will use frequently when developing the API:
 
 ### Updating your local DBs after modifying schema.prisma
