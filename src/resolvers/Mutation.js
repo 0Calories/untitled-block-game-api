@@ -27,8 +27,7 @@ const Mutation = {
       data: {
         user: {
           connect: { id: user.id }
-        },
-        // homeWorldId: homeWorld.id
+        }
       }
     });
 
