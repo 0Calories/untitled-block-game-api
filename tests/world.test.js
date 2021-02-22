@@ -7,7 +7,7 @@ import "regenerator-runtime/runtime";
 import server from '../src/server';
 import { URL } from './utils/constants';
 import seedDatabase, { userOne, userTwo, worldOne } from './utils/seedDatabase';
-import { createWorld, visitWorld, updateWorld, deleteWorld } from './utils/operations';
+import { createWorld, visitWorld, updateWorld, deleteWorld, setHomeWorld, myCharacter } from './utils/operations';
 import { WORLD_VISIT_REWARD, HOURS_BETWEEN_VISITS } from '../src/utils/constants';
 
 const prisma = new PrismaClient();
@@ -250,3 +250,35 @@ test('Should delete all related Visitor entries after deleting a world', async (
   expect(visitorAfterDeletion).toBeFalsy();
 });
 
+
+test('Should properly set a home world', async () => {
+  const variables = {
+    worldId: worldOne.world.id
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userOne.jwt}`
+    }
+  });
+
+  await graphQLClient.request(setHomeWorld, variables)
+
+  const character = await graphQLClient.request(myCharacter);
+
+  expect(character.myCharacter.homeWorldId).toEqual(variables.worldId);
+});
+
+test('Should not allow a user to set someone else\'s world as their home world', async () => {
+  const variables = {
+    worldId: worldOne.world.id
+  };
+
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${userTwo.jwt}`
+    }
+  });
+
+  await expect(graphQLClient.request(setHomeWorld, variables)).rejects.toThrow('User does not own this world');
+});

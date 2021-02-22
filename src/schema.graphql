@@ -10,11 +10,11 @@ type Mutation {
   login(data: LoginInput!): AuthPayload!
 
   updateCharacter(data: UpdateCharacterInput!): Character!
-  setHomeWorld(worldId: Int!): World!
 
   createWorld(data: CreateWorldInput!): World!
   updateWorld(data: UpdateWorldInput!): World!
   deleteWorld(worldId: Int!): World!
+  setHomeWorld(worldId: Int!): World!
 
   visitWorld(worldId: Int!): World!
 }
