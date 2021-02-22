@@ -18,13 +18,14 @@ model User {
 }
 
 model Character {
-  user     User      @relation(fields: [id], references: [id])
-  id       Int       @id
-  colour   String    @default("#FFFFFF")
-  bobux    Int       @default(0)
-  bio      String?
-  worlds   World[]
-  visitors Visitor[]
+  user        User      @relation(fields: [id], references: [id])
+  id          Int       @id
+  colour      String    @default("#FFFFFF")
+  bobux       Int       @default(0)
+  bio         String?
+  homeWorldId Int       @default(0)
+  worlds      World[]
+  visitors    Visitor[]
 }
 
 model World {

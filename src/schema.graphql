@@ -10,6 +10,7 @@ type Mutation {
   login(data: LoginInput!): AuthPayload!
 
   updateCharacter(data: UpdateCharacterInput!): Character!
+  setHomeWorld(worldId: Int!): World!
 
   createWorld(data: CreateWorldInput!): World!
   updateWorld(data: UpdateWorldInput!): World!
@@ -74,8 +75,9 @@ type Character {
   colour: String!
   bobux: Int!
   bio: String
+  homeWorldId: Int
   worlds: [World]
-  visitedWorld: [World]
+  visitedWorlds: [World]
 }
 
 type World {
