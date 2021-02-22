@@ -10,7 +10,8 @@
     "update-db": "prisma migrate dev --preview-feature",
     "update-db-test": "env-cmd -f ./config/test.env prisma migrate dev --preview-feature",
     "update-db-prod": "env-cmd -f ./config/prod.env prisma migrate dev --preview-feature",
-    "update-dbs": "yarn update-db && yarn update-db-test"
+    "update-dbs": "yarn update-db && yarn update-db-test",
+    "push-db": "env-cmd -f ./config/prod.env prisma db push --preview-feature"
   },
   "license": "MIT",
   "devDependencies": {
@@ -39,6 +40,7 @@
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
     "prisma-binding": "^2.3.16",
-    "regenerator-runtime": "^0.13.7"
+    "regenerator-runtime": "^0.13.7",
+    "request": "^2.88.2"
   }
 }
