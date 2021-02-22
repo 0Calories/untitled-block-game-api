@@ -63,7 +63,7 @@ server.post('/worlds/:worldId', async (req, res) => {
 server.get('/worlds/:worldId', async (req, res) => {
   const worldId = parseInt(req.params.worldId);
 
-  // TODO: Need to implement 
+  // TODO: Need to implement security in S3 bucket
   request(`${process.env.S3_BUCKET_URL}/${worldId}/world.block`)
     .pipe(res.set('Content-Type', 'application/octet-stream').set('Content-Disposition', 'inline; filename="world.block"'));
 });
