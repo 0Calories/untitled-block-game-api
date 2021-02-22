@@ -27,7 +27,28 @@ const Mutation = {
       data: {
         user: {
           connect: { id: user.id }
+        },
+        // homeWorldId: homeWorld.id
+      }
+    });
+
+    // Create a home world for the user
+    const homeWorld = await prisma.world.create({
+      data: {
+        name: `${args.data.username}'s Home World`,
+        creator: {
+          connect: { id: user.id }
         }
+      }
+    });
+
+    // Update the home world for the character
+    await prisma.character.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        homeWorldId: homeWorld.id
       }
     })
 
