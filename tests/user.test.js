@@ -7,7 +7,7 @@ import "regenerator-runtime/runtime";
 import server from '../src/server';
 import { URL } from './utils/constants';
 import seedDatabase, { userOne } from './utils/seedDatabase';
-import { createUser, login, updateCharacter } from './utils/operations';
+import { createUser, login, updateCharacter, myCharacter } from './utils/operations';
 
 const prisma = new PrismaClient();
 
@@ -147,13 +147,29 @@ test('Should reject invalid hex strings when updating character', async () => {
   await expect(graphQLClient.request(updateCharacter, variables)).rejects.toThrow('Invalid colour value provided');
 });
 
-// test('Should fetch user profile', async () => {
-//   // const client = getClient(userOne.jwt);
+test('Should create a new home world for a user upon registration', async () => {
+  const variables = {
+    data: {
+      username: 'Eric Cao',
+      email: 'eric@example.com',
+      password: 'password1234'
+    }
+  };
 
-//   // const { data } = await client.query({ query: getProfile });
+  // Create the user
+  const payload = await request(URL, createUser, variables);
 
-//   // expect(data.me.id).toBe(userOne.user.id);
-//   // expect(data.me.name).toBe(userOne.user.name);
-//   // expect(data.me.email).toBe(userOne.user.email);
-// });
+  // Login as the user
+  const graphQLClient = new GraphQLClient(URL, {
+    headers: {
+      Authorization: `Bearer ${payload.createUser.token}`
+    }
+  });
+
+  // Ensure that the user's character has a new world
+  const character = await graphQLClient.request(myCharacter);
+
+  expect(character.myCharacter.worlds[0]).toBeTruthy();
+  expect(character.myCharacter.homeWorldId).toEqual(character.myCharacter.worlds[0].id);
+});
 

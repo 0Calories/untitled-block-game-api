@@ -14,6 +14,7 @@ type Mutation {
   createWorld(data: CreateWorldInput!): World!
   updateWorld(data: UpdateWorldInput!): World!
   deleteWorld(worldId: Int!): World!
+  setHomeWorld(worldId: Int!): World!
 
   visitWorld(worldId: Int!): World!
 }
@@ -74,8 +75,9 @@ type Character {
   colour: String!
   bobux: Int!
   bio: String
+  homeWorldId: Int
   worlds: [World]
-  visitedWorld: [World]
+  visitedWorlds: [World]
 }
 
 type World {

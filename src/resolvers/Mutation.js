@@ -29,6 +29,26 @@ const Mutation = {
           connect: { id: user.id }
         }
       }
+    });
+
+    // Create a home world for the user
+    const homeWorld = await prisma.world.create({
+      data: {
+        name: `${args.data.username}'s Home World`,
+        creator: {
+          connect: { id: user.id }
+        }
+      }
+    });
+
+    // Update the home world for the character
+    await prisma.character.update({
+      where: {
+        id: user.id
+      },
+      data: {
+        homeWorldId: homeWorld.id
+      }
     })
 
     return {
@@ -253,6 +273,42 @@ const Mutation = {
     }
 
     return world;
+  },
+
+  async setHomeWorld(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
+    const { worldId } = args;
+
+    // Check if the world exists, and if authenticated user owns that world
+    const world = await prisma.world.findUnique({
+      where: {
+        id: worldId
+      },
+      select: { creator: true }
+    });
+
+    if (!world) {
+      throw new Error(`Could not find world with id ${worldId}`);
+    }
+
+    if (world.creator.id !== userId) {
+      throw new Error('User does not own this world');
+    }
+
+    await prisma.character.update({
+      where: {
+        id: userId
+      },
+      data: {
+        homeWorldId: worldId
+      }
+    });
+
+    return await prisma.world.findUnique({
+      where: {
+        id: worldId
+      }
+    });
   }
 };
 

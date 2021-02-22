@@ -78,4 +78,29 @@ const deleteWorld = gql`
   }
 `;
 
-export { createUser, login, updateCharacter, createWorld, visitWorld, updateWorld, deleteWorld };
+const setHomeWorld = gql`
+  mutation($worldId: Int!) {
+    setHomeWorld(worldId: $worldId) {
+      id
+      name
+      description
+    }
+  }
+`;
+
+const myCharacter = gql`
+  query {
+    myCharacter {
+      id
+      colour
+      homeWorldId
+      worlds {
+        id
+        name
+        description
+      }
+    }
+  }
+`;
+
+export { createUser, login, updateCharacter, createWorld, visitWorld, updateWorld, deleteWorld, setHomeWorld, myCharacter };
