@@ -88,7 +88,7 @@ const Mutation = {
     const { email, username, password } = args.data;
 
     if (!email && !username) {
-      throw new Error('Must provide an email address or username');
+      throw new Error('Please provide an email address or username');
     }
 
     const user = await prisma.user.findUnique({
