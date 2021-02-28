@@ -124,7 +124,6 @@ const Mutation = {
       if (!hexRegex.test(colour)) {
         throw new Error('Invalid colour value provided');
       }
-
     }
 
     return await prisma.character.update({
