@@ -20,6 +20,7 @@ model User {
 model Character {
   user        User      @relation(fields: [id], references: [id])
   id          Int       @id
+  name        String    @default("Character")
   colour      String    @default("#FFFFFF")
   bobux       Int       @default(0)
   bio         String?
