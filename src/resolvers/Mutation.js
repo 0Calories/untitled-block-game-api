@@ -118,10 +118,13 @@ const Mutation = {
     const userId = getUserId(request);
     const { colour } = args.data;
 
-    // Ensure that the colour argument is a proper hex colour code
-    const hexRegex = /^#[0-9A-Fa-f]{6}$|^#[0-9A-Fa-f]{3}$/;
-    if (!hexRegex.test(colour)) {
-      throw new Error('Invalid colour value provided');
+    if (colour) {
+      // Ensure that the colour argument is a proper hex colour code
+      const hexRegex = /^#[0-9A-Fa-f]{6}$|^#[0-9A-Fa-f]{3}$/;
+      if (!hexRegex.test(colour)) {
+        throw new Error('Invalid colour value provided');
+      }
+
     }
 
     return await prisma.character.update({
