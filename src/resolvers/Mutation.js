@@ -27,9 +27,9 @@ const Mutation = {
       data: {
         user: {
           connect: { id: user.id }
-        }
-      },
-      name: user.username
+        },
+        name: user.username
+      }
     });
 
     // Create a home world for the user
