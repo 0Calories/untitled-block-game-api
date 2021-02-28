@@ -59,8 +59,17 @@ server.post('/worlds/:worldId', async (req, res) => {
   }
 });
 
-// Custom endpoint for downloading world files
+// Custom endpoint for downloading world data files
 server.get('/worlds/:worldId', async (req, res) => {
+  const worldId = parseInt(req.params.worldId);
+
+  // TODO: Need to implement security in S3 bucket
+  request(`${process.env.S3_BUCKET_URL}/${worldId}/world.block`)
+    .pipe(res.set('Content-Type', 'application/octet-stream').set('Content-Disposition', 'inline; filename="world.block"'));
+});
+
+// Custom endpoint for downloading world thumbnail
+server.get('/worlds/:worldId/thumb', async (req, res) => {
   const worldId = parseInt(req.params.worldId);
 
   // TODO: Need to implement security in S3 bucket
