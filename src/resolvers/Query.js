@@ -22,6 +22,16 @@ const Query = {
         worlds: true
       }
     }, info);
+  },
+
+  async getCharacters(parent, args, { prisma, request }, info) {
+    return await prisma.character.findMany({
+      where: {
+        name: {
+          contains: args.query
+        }
+      }
+    });
   }
 };
 
