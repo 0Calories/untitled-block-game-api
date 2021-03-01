@@ -103,4 +103,25 @@ const myCharacter = gql`
   }
 `;
 
-export { createUser, login, updateCharacter, createWorld, visitWorld, updateWorld, deleteWorld, setHomeWorld, myCharacter };
+const getCharacters = gql`
+  query($query: String) {
+    getCharacters(query: $query) {
+      id
+      colour
+      name
+    }
+  }
+`;
+
+export {
+  createUser,
+  login,
+  updateCharacter,
+  createWorld,
+  visitWorld,
+  updateWorld,
+  deleteWorld,
+  setHomeWorld,
+  myCharacter,
+  getCharacters
+};

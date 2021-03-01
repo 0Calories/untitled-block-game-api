@@ -52,7 +52,8 @@ const seedDatabase = async () => {
     data: {
       user: {
         connect: { id: userOne.user.id }
-      }
+      },
+      name: userOne.user.username
     }
   });
 
@@ -65,7 +66,8 @@ const seedDatabase = async () => {
     data: {
       user: {
         connect: { id: userTwo.user.id }
-      }
+      },
+      name: userTwo.user.username
     }
   });
 
