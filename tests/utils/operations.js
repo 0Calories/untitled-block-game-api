@@ -104,8 +104,8 @@ const myCharacter = gql`
 `;
 
 const getCharacters = gql`
-  query {
-    getCharacters {
+  query($query: String) {
+    getCharacters(query: $query) {
       id
       colour
       name
@@ -113,4 +113,15 @@ const getCharacters = gql`
   }
 `;
 
-export { createUser, login, updateCharacter, createWorld, visitWorld, updateWorld, deleteWorld, setHomeWorld, myCharacter, getCharacters };
+export {
+  createUser,
+  login,
+  updateCharacter,
+  createWorld,
+  visitWorld,
+  updateWorld,
+  deleteWorld,
+  setHomeWorld,
+  myCharacter,
+  getCharacters
+};

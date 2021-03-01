@@ -34,5 +34,13 @@ test('Should fetch a list of all characters', async () => {
   expect(response.getCharacters[1].name).toBe(userTwo.character.name);
 });
 
+test('Should query characters appropriately', async () => {
+  const variables = {
+    query: 'Daniel'
+  };
 
+  const response = await request(URL, getCharacters, variables);
 
+  expect(response.getCharacters.length).toEqual(1);
+  expect(response.getCharacters[0].name).toBe(variables.query);
+});
