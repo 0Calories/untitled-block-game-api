@@ -24,6 +24,17 @@ const Query = {
     }, info);
   },
 
+  async getCharacter(parent, { id }, { prisma, request }, info) {
+    return prisma.character.findUnique({
+      where: {
+        id
+      },
+      include: {
+        worlds: true
+      }
+    }, info);
+  },
+
   async getCharacters(parent, args, { prisma, request }, info) {
     return await prisma.character.findMany({
       where: {

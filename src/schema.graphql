@@ -1,6 +1,7 @@
 type Query {
   me: User!
   myCharacter: Character!
+  getCharacter(id: Int!): Character!
   getCharacters(query: String): [Character]!
 }
 
