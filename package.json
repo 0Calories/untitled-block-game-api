@@ -37,6 +37,7 @@
     "core-js": "^3.6.5",
     "env-cmd": "^10.1.0",
     "express-fileupload": "^1.2.1",
+    "graphql-playground-html": "^1.6.29",
     "graphql-request": "^3.0.0",
     "graphql-yoga": "^1.18.3",
     "jsonwebtoken": "^8.5.1",
