@@ -174,7 +174,7 @@ const Mutation = {
       data: {
         name,
         description,
-        updated_at: new Date()
+        updatedAt: new Date()
       }
     }, info);
   },

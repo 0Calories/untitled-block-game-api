@@ -8,13 +8,12 @@ datasource db {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
-  username   String     @unique
-  email      String     @unique
-  password   String
-  created_at DateTime?  @default(now())
-  comments   Comment[]
-  character  Character?
+  id        Int        @id @default(autoincrement())
+  username  String     @unique
+  email     String     @unique
+  password  String
+  comments  Comment[]
+  character Character?
 }
 
 model Character {
@@ -27,6 +26,7 @@ model Character {
   homeWorldId Int       @default(0)
   worlds      World[]
   visitors    Visitor[]
+  joinDate    DateTime? @default(now())
 }
 
 model World {
@@ -38,20 +38,20 @@ model World {
   dislikes    Int       @default(0)
   creator     Character @relation(fields: [creatorId], references: [id])
   creatorId   Int
-  created_at  DateTime? @default(now())
-  updated_at  DateTime? @default(now())
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @default(now())
   comments    Comment[]
   visitors    Visitor[]
 }
 
 model Comment {
-  id         Int       @id @default(autoincrement())
-  text       String
-  userId     Int
-  worldId    Int
-  created_at DateTime? @default(now())
-  user       User      @relation(fields: [userId], references: [id])
-  world      World     @relation(fields: [worldId], references: [id])
+  id        Int       @id @default(autoincrement())
+  text      String
+  userId    Int
+  worldId   Int
+  createdAt DateTime? @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  world     World     @relation(fields: [worldId], references: [id])
 }
 
 // Relational table for world visitors
