@@ -75,6 +75,7 @@ type User {
 
 type Character {
   id: Int
+  joinDate: String
   colour: String!
   bobux: Int!
   name: String!
