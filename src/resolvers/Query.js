@@ -36,10 +36,13 @@ const Query = {
   },
 
   async getCharacters(parent, args, { prisma, request }, info) {
+    const query = args.query ? args.query.toLowerCase() : undefined;
+
     return await prisma.character.findMany({
       where: {
         name: {
-          contains: args.query
+          contains: query,
+          mode: 'insensitive'
         }
       }
     });
