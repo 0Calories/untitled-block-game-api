@@ -111,42 +111,6 @@ test('Should not create user with a short password', async () => {
   await expect(request(URL, createUser, variables)).rejects.toThrow('Password must be 8 characters or longer');
 });
 
-test('Should update a user\'s colour and bio', async () => {
-  const variables = {
-    data: {
-      bio: "I know a lot about web dev...",
-      colour: "#F1F2F3"
-    }
-  };
-
-  const graphQLClient = new GraphQLClient(URL, {
-    headers: {
-      Authorization: `Bearer ${userOne.jwt}`
-    }
-  });
-
-  const response = await graphQLClient.request(updateCharacter, variables);
-  expect(response.updateCharacter.bio).toBe(variables.data.bio);
-  expect(response.updateCharacter.colour).toBe(variables.data.colour);
-});
-
-test('Should reject invalid hex strings when updating character', async () => {
-  const variables = {
-    data: {
-      bio: "I know a lot about web dev...",
-      colour: "wow"
-    }
-  };
-
-  const graphQLClient = new GraphQLClient(URL, {
-    headers: {
-      Authorization: `Bearer ${userOne.jwt}`
-    }
-  });
-
-  await expect(graphQLClient.request(updateCharacter, variables)).rejects.toThrow('Invalid colour value provided');
-});
-
 test('Should create a new home world for a user upon registration', async () => {
   const variables = {
     data: {
