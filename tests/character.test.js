@@ -44,3 +44,14 @@ test('Should query characters appropriately', async () => {
   expect(response.getCharacters.length).toEqual(1);
   expect(response.getCharacters[0].name).toBe(variables.query);
 });
+
+test('Should not update bio if character count exceeds max amount', async () => {
+  const variables = {
+    query: 'Daniel'
+  };
+
+  const response = await request(URL, getCharacters, variables);
+
+  expect(response.getCharacters.length).toEqual(1);
+  expect(response.getCharacters[0].name).toBe(variables.query);
+});

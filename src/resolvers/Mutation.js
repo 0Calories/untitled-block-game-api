@@ -5,7 +5,7 @@ import getUserId from '../utils/getUserId';
 import generateToken from '../utils/generateToken';
 import hashPassword from '../utils/hashPassword';
 import applyVisit from '../utils/applyVisit';
-import { HOURS_BETWEEN_VISITS } from '../utils/constants';
+import { HOURS_BETWEEN_VISITS, BIO_MAX_CHAR_COUNT } from '../utils/constants';
 
 
 const Mutation = {
@@ -149,7 +149,12 @@ const Mutation = {
 
   async updateCharacter(parent, args, { prisma, request }, info) {
     const userId = getUserId(request);
-    const { colour } = args.data;
+    const { colour, bio } = args.data;
+
+    // If the bio field was provided, ensure its character count does not exceed the maximum
+    if (bio && bio.length > BIO_MAX_CHAR_COUNT) {
+      throw new Error(`Bio cannot exceed ${BIO_MAX_CHAR_COUNT} characters`);
+    }
 
     if (colour) {
       // Ensure that the colour argument is a proper hex colour code
