@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import validator from 'email-validator';
 
 import getUserId from '../utils/getUserId';
 import generateToken from '../utils/generateToken';
@@ -9,13 +10,45 @@ import { HOURS_BETWEEN_VISITS } from '../utils/constants';
 
 const Mutation = {
   async createUser(parent, args, { prisma }, info) {
+    // Validate the username and email inputs
+    const isValidUsername = /^[a-z0-9]+$/i.test(args.data.username);
+    if (!isValidUsername) {
+      throw new Error('Username cannot contain symbols or spaces');
+    }
+
+    const isValidEmail = validator.validate(args.data.email);
+    if (!isValidEmail) {
+      throw new Error('Please enter a valid email address');
+    }
+
     const password = await hashPassword(args.data.password);
 
     if (args.data.username.length < 4) {
       throw new Error('Username must be at least 4 characters long');
     }
 
-    const user = await prisma.user.create({
+    // Ensure the username or email doesn't already exist
+    let user = await prisma.user.findUnique({
+      where: {
+        username: args.data.username
+      }
+    }, info);
+
+    if (user) {
+      throw new Error('Username is taken');
+    }
+
+    user = await prisma.user.findUnique({
+      where: {
+        email: args.data.email
+      }
+    }, info);
+
+    if (user) {
+      throw new Error('Email is already in use');
+    }
+
+    user = await prisma.user.create({
       data: {
         ...args.data,
         password

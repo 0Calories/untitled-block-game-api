@@ -90,7 +90,7 @@ test('Should login with correct credentials using username', async () => {
 test('Should not create user with a short username', async () => {
   const variables = {
     data: {
-      username: 'AH!',
+      username: 'AH',
       email: 'eric@example.com',
       password: 'aVerysecurepassword123'
     }
@@ -102,7 +102,7 @@ test('Should not create user with a short username', async () => {
 test('Should not create user with a short password', async () => {
   const variables = {
     data: {
-      username: 'Eric Cao',
+      username: 'EricCao',
       email: 'eric@example.com',
       password: 'pass'
     }
@@ -150,7 +150,7 @@ test('Should reject invalid hex strings when updating character', async () => {
 test('Should create a new home world for a user upon registration', async () => {
   const variables = {
     data: {
-      username: 'Eric Cao',
+      username: 'EricCao',
       email: 'eric@example.com',
       password: 'password1234'
     }

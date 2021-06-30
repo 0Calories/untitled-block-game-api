@@ -35,6 +35,7 @@
     "babel-preset-env": "^1.7.0",
     "bcryptjs": "^2.4.3",
     "core-js": "^3.6.5",
+    "email-validator": "^2.0.4",
     "env-cmd": "^10.1.0",
     "express-fileupload": "^1.2.1",
     "graphql-playground-html": "^1.6.29",
