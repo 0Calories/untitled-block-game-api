@@ -13,15 +13,7 @@ Sentry.init({
   ],
 });
 
-const options = { 
-  port: process.env.PORT || 4000,
-  cors: {
-    credentials: true,
-    origin: ['https://untitledblockgame.netlify.app/']
-  }
-};
-
-server.start(options, () => {
+server.start({ port: process.env.PORT || 4000 }, () => {
   console.log('The server is up!');
 });
 

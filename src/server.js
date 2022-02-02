@@ -23,6 +23,16 @@ const server = new GraphQLServer({
   fragmentReplacements
 });
 
+server.express.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://untitledblockgame.netlify.app/');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  );
+  next();
+});
+
+
 server.use(fileUpload());
 
 // Custom endpoint for handling world file uploads
