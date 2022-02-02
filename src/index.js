@@ -13,7 +13,15 @@ Sentry.init({
   ],
 });
 
-server.start({ port: process.env.PORT || 4000 }, () => {
+const options = { 
+  port: process.env.PORT || 4000,
+  cors: {
+    credentials: true,
+    origin: ['https://untitledblockgame.netlify.app/']
+  }
+};
+
+server.start(options, () => {
   console.log('The server is up!');
 });
 
@@ -24,7 +32,7 @@ const transaction = Sentry.startTransaction({
 
 setTimeout(() => {
   try {
-    throw new Error('This is a new, never before seen error!');
+    throw new Error('A new error');
   } catch (e) {
     Sentry.captureException(e);
   } finally {
