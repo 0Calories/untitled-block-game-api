@@ -24,7 +24,7 @@ const transaction = Sentry.startTransaction({
 
 setTimeout(() => {
   try {
-    boo();
+    throw new Error('This is a new, never before seen error!');
   } catch (e) {
     Sentry.captureException(e);
   } finally {
